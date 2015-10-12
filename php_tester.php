@@ -1,288 +1,196 @@
 <?php
+class Aluno {
 
-class DefaultObject {
-    protected $fields = NULL;
-    protected $changed = false;
+    private $idaluno;
+    private $desaluno;
+    private $instatus;
+    private $dtcadastro;
 
-    public function __construct($var){
-        $this->fields = (object)array();
-        switch(gettype($var)){
-            case 'array':
-                return $this->setArrayInAttr($var);
-                break;
-            case 'integer':
-                return $this->get($var);
-                break;
+    public function getIdaluno(){
+        return $this->idaluno;
+    }
 
-            case 'object':
-                if(method_exists($this, "getBy".get_class($var))){
-                    return $this->{"getBy".get_class($var)}($val);
-                }else{
-                    return true;
-                }
-                break;
-            default:
-                return true;
-                break;
+    public function setIdaluno($idaluno){
+        $this->idaluno = $idaluno;
+    }
+
+    public function getDesaluno(){
+        return $this->desaluno;
+    }
+
+    public function setDesaluno($desaluno){
+        $this->desaluno = $desaluno;
+    }
+
+    public function getInstatus(){
+        return $this->instatus;
+    }
+
+    public function setInstatus($instatus){
+        $this->instatus = $instatus;
+    }
+
+    public function getDtcadastro(){
+        return $this->dtcadastro;
+    }
+
+    public function setDtcadastro($dtcadastro){
+        $this->dtcadastro = $dtcadastro;
+    }
+
+    public function __construct($data = array()){
+
+        if(gettype($data) == "numeric" || gettype($data) == "integer" || gettype($data) == "string"){
+
+            return $this->load($data);
+
+        }else if(gettype($data) == "array") {
+
+            $this->setIdaluno($data['idaluno']);
+            $this->setDesaluno($data['desaluno']);
+            $this->setInstatus($data['instatus']);
+            $this->setDtcadastro($data['dtcadastro']);
+
+        }else{
+
+            return false;
         }
     }
 
-    final public function setArrayInAttr($arr){
-        foreach($arr as $key=>$val){
-            $arr[strtolower($key)] = $val;
-        }
-        $arr = array_merge((array)$this->fields, $arr);
-        $this->fields = (object)$arr;
-        foreach($arr as $key=>$val){
-            if($key) $this->{strtolower($key)} = $val;
-        }
+    public function load($idaluno){
 
-        $this->setChanged();
-        return $this;
-    }
-    /** Retorna apenas os carecteres alfanúmericos de uma string : String */
-    final public function getNumbers($string, $exceptions = array()){
-        $result = '';
-        for($i=0; $i<strlen($string); $i++){
-            $l = substr($string, $i, 1);
-            if(is_numeric($l) || in_array($l, $exceptions)) $result .= $l;
-        }
+        $select =
+        "SELECT 
+            idaluno
+            ,desaluno
+            ,instatus
+            ,dtcadastro
+        FROM tb_alunos
+        WHERE idaluno = $idaluno;";
+
+        $result = SQL::arrays($select, false);
+
+        $this->setIdaluno($result['idaluno']);
+        $this->setDesaluno($result['desaluno']);
+        $this->setInstatus($result['instatus']);
+        $this->setDtcadastro($result['dtcadastro']);
+
         return $result;
     }
-    public function __call($name, $args){
-//Crindo Getters e Setters automaticamento
-        if(!method_exists($this, $name) && strlen($name)>3 && in_array(substr($name,0,3), array('get', 'set'))){
-            if(substr($name,0,3)=='get'){
-//Getters
-                $value = (isset($this->fields->{substr(strtolower($name),3,strlen($name)-3)}))?$this->fields->{substr(strtolower($name),3,strlen($name)-3)}:NULL;
-                $value2 = (isset($this->{substr(strtolower($name),3,strlen($name)-3)}))?$this->{substr(strtolower($name),3,strlen($name)-3)}:NULL;
-                if($value2!==NULL){
-                    return $value2;
-                }else{
-                    if($value===NULL){
-                        return $value2;
-                    }elseif($value==0){
-                        if($value2===NULL){
-                            return $value;
-                        }else{
-                            return $value2;
-                        }
-                    }else{
-                        return $value;
-                    }
-                }
-            }else{
-//Setters
-                $this->setChanged();
-                $this->fields->{substr(strtolower($name),3,strlen($name)-3)} = $args[0];
-                $this->{substr(strtolower($name),3,strlen($name)-3)} = $args[0];
-                return $args[0];
-            }
-        }else{
-            if($this) return call_user_func_array(array($this,$name),$args);
-        }
-    }
-    public function toSqlDate($arg, $format = 'Y-m-d H:i:s'){
-        if($arg===NULL) return NULL;
 
-        switch(gettype($arg)){
-            case 'object':
+    public function get($idaluno){
 
-                if(get_class($arg) === 'DateTime'){
+        $select =
+        "SELECT 
+            idaluno
+            ,desaluno
+            ,instatus
+            ,dtcadastro
+        FROM tb_alunos
+        WHERE idaluno = $idaluno;";
 
-                    return $arg->format($format);
+        $result = SQL::arrays($select, false);
 
-                }else{
-
-                    throw new Exception("O método toSqlDate não entende este objeto.", 1);
-
-                }
-
-                break;
-            case 'integer':
-                return date($format, $arg);
-                break;
-            case 'string':
-                if(strlen($arg)==0){
-                    return '';
-                }
-                if(strpos($arg,'-')===false){
-
-                    if(strpos($arg,'/')!==false){
-
-                        $args = explode(" ", $arg);
-
-                        $dt = $args[0];
-                        $hr = $args[1];
-                        $dts = explode("/", $dt);
-
-                        return date($format, strtotime($dts[2]."-".$dts[1]."-".$dts[0]." ".$hr));
-
-                    }else{
-
-                        return date($format, $arg);
-
-                    }
-
-                }else{
-                    return date($format, strtotime($arg));
-                }
-                break;
-        }
-    }
-    public function name_format($name){
-        $isUTF8 = false;
-        if(mb_detect_encoding($name, "UTF-8, ISO-8859-1")=='UTF-8'){
-            $name = utf8_decode($name);
-            $isUTF8 = true;
-        }
-        $name = trim(mb_strtolower($name));
-        $nomeCompleto = array();
-        foreach(explode(' ', $name) as $palavra){
-            if(!in_array($palavra, array('da','do','de','das','dos', 'e'))){
-                $palavra = ucwords($palavra);
-            }
-            $nomeCompleto[] = $palavra;
-        }
-        if($isUTF8){
-            return utf8_encode(implode(' ', $nomeCompleto))
-                ;
-        }else{
-            return implode(' ', $nomeCompleto);
-        }
+        return $result;
     }
 
-    /** Controle de alterações do Modelo */
-    private function getChanged(){
-        return $this->changed;
-    }
-    private function setChanged(){
-        $this->changed = true;
-    }
-    private function setSaved(){
-        $this->changed = false;
-    }
-    /* ************************************** */
+    public function listAll(){
 
-    public function getFields($array = true){
+        $select =
+        "SELECT 
+            idaluno
+            ,desaluno
+            ,instatus
+            ,dtcadastro
+        FROM tb_alunos
+        ORDER BY dtcadastro;";
 
-        if($array){
-            return (array)$this->fields;
-        }else{
-            return $this->fields;
+        $result = SQL::arrays($select);
+
+        return $result;
+    }
+
+    public function listAllActives(){
+
+        $select =
+        "SELECT 
+            idaluno
+            ,desaluno
+            ,instatus
+            ,dtcadastro
+        FROM tb_alunos
+        WHERE instatus = 1
+        ORDER BY dtcadastro;";
+
+        $result = SQL::arrays($select, false);
+
+        return $result;
+    }
+
+    public function save(){
+
+        $save = "";
+
+        if(count($this->get($this->getIdaluno())) > 0){
+
+            $save = 
+            "UPDATE tb_alunos
+            SET
+                desaluno = '".$this->getDesaluno()."'
+                ,instatus = '".$this->getInstatus()."'
+            WHERE
+                idaluno = $this->getIdaluno();
+
+            SELECT idaluno FROM tb_alunos WHERE idaluno = $this->getIdaluno();";
+
+        } else {
+
+            $save = 
+            "INSERT INTO tb_alunos(
+                desaluno
+                ,instatus
+                ,dtcadastro
+            ) VALUES (
+                '".$this->getDesaluno()."'
+                ,'".$this->getInstatus()."'
+                ,'".date('Y-m-d')."'
+            );
+
+            SELECT LAST_INSERT_ID() as idaluno;";
+
         }
 
+        $result = SQL::arrays($save, false);
+
+        return $result;
     }
 
-    public function getSimpleData(){
+    public function remove(){
 
-        $simple = array();
-        foreach ($this->getFields(true) as $key => $value) {
-            if(
-                gettype($value)!='object' &&
-                gettype($value)!='array' &&
-                !in_array($key, array("syncNotAtendimentoContato", "loadedfrom")) &&
-                $value
-            ){
-                $simple[$key] = $value;
-            }
+        $remove =
+        "UPDATE tb_alunos
+            instatus = 0
+        WHERE idaluno = $this->getIdaluno();";
 
-        }
-        return $simple;
-
+        SQL::query($remove);
     }
 
-    public function setError($msg){
-        throw new ErrorException($msg);
+    public function del(){
+
+        $del =
+        "DELETE FROM tb_alunos
+        WHERE idaluno = $this->getIdaluno();";
+
+        SQL::query($del);
     }
+
 }
 
-class Alunos extends DefaultObject {
-
-	private $idaluno;
-	private $desaluno;
-	private $instatus;
-	private $dtcadastro;
-
-	public function getIdaluno(){
-		return $this->idaluno;
-	}
-
-	public function setIdaluno($idaluno){
-		$this->idaluno = $idaluno;
-	}
-
-	public function getDesaluno(){
-		return $this->desaluno;
-	}
-
-	public function setDesaluno($desaluno){
-		$this->desaluno = $desaluno;
-	}
-
-	public function getInstatus(){
-		return $this->instatus;
-	}
-
-	public function setInstatus($instatus){
-		$this->instatus = $instatus;
-	}
-
-	public function getDtcadastro(){
-		return $this->dtcadastro;
-	}
-
-	public function setDtcadastro($dtcadastro){
-		$this->dtcadastro = $dtcadastro;
-	}
-
-	public function __construct($data = array()){
-
-		if(gettype($data) == "integer" || gettype($data) == "string"){
-
-			return $this->load($data);
-
-		}else if(gettype($data) == "array") {
-
-			$this->setIdaluno($data['idaluno']);
-			$this->setDesaluno($data['desaluno']);
-			$this->setInstatus($data['instatus']);
-			$this->setDtcadastro($data['dtcadastro']);
-
-		}else{
-
-			return false;
-		}
-	}
-	public function load($idaluno){
-
-		$select =
-		"SELECT 
-			idaluno
-			,desaluno
-			,instatus
-			,dtcadastro
-		FROM tb_alunos
-		WHERE idaluno = $idaluno";
-
-		$result = SQL::arrays($select, false);
-
-		$this->setIdaluno($result['idaluno']);
-		$this->setDesaluno($result['desaluno']);
-		$this->setInstatus($result['instatus']);
-		$this->setDtcadastro($result['dtcadastro']);
-
-		return $result;
-	}
-}
-
-
-$Aluno = new Alunos(array(
-	"idaluno" => 1,
-	"desaluno" => "Aluno1",
-	"instatus" => 1,
-	"dtcadastro" => "2015-05-23"
+$Aluno = new Aluno(array(
+    'idaluno' => 0,
+    'desaluno' => "Alunpo1",
+    'instatus' => '1'
 ));
 
-print_r($Aluno->getDesaluno());
+print_r($Aluno->save());
 ?>

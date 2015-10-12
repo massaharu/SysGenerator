@@ -1,0 +1,49 @@
+ .white{
+    color:#FFFFFF;
+}
+.green{
+    color:green;
+}
+.red{
+    color: red;
+}
+.fa{
+    font-size: 20px;
+}
+
+.tb-sysgenerator{
+	box-shadow: 2px 3px 7px 1px rgb(165, 165, 165);
+}
+
+	.tb-sysgenerator input[type=text]{
+	    border: 0px;
+	    box-shadow: inset 1px 1px 2px 1px rgb(203, 203, 203);
+	    padding: 4px 10px;
+	    width: 100%;
+	}
+
+	.tb-sysgenerator select,
+	#modal-system .modal-body textarea{
+	    border: 0px;
+	    box-shadow: inset 1px 1px 2px 1px rgb(203, 203, 203);
+	    padding: 5px 10px;
+	    width: 100%;
+	}
+		.tb-sysgenerator thead tr h3{
+			margin: 0;
+		}
+
+.fk-table,
+.fk-id{
+    font-weight: bold;
+}
+
+#add-table{
+	margin: 10px 0;
+	right: 15px;
+	position: absolute;
+	padding: 14px;
+}
+	#add-table span{
+		font-size: 20px;
+	}
