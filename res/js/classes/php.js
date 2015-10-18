@@ -1,8 +1,8 @@
-var PHP = (function(){
+/**
+* PHP CLASS FUNCTIONS
+*/
 
-    /**
-    * Methods for PHP Class
-    */ 
+var PHP = (function(){
 
     var getAttr = (function(obj){
 

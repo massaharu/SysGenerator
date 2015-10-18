@@ -233,20 +233,26 @@ function generateSystem(){
 
     $.each(lines, function(){
 
-        tableContent.push({
-            attribute: $(this).find('input[name=name]').val(),
-            dataType: $(this).find('select[name=datatype]').val(),
-            isPk: $(this).find('input[name=pk]').is(':checked'),
-            isFK: $(this).find('input[name=fk]').is(':checked'),
-            fkTable: $(this).find('input[name=fk]').closest('td').find('.fk-table').text(),
-            fkId: $(this).find('input[name=fk]').closest('td').find('.fk-id').text(),
-            isPrivate: $(this).find('input[name="private"]').is(':checked')
-        })
+        if($.trim($(this).find('input[name=name]').val())){
+
+            tableContent.push({
+                attribute: $(this).find('input[name=name]').val(),
+                dataType: $(this).find('select[name=datatype]').val(),
+                isPk: $(this).find('input[name=pk]').is(':checked'),
+                isFK: $(this).find('input[name=fk]').is(':checked'),
+                fkTable: $(this).find('input[name=fk]').closest('td').find('.fk-table').text(),
+                fkId: $(this).find('input[name=fk]').closest('td').find('.fk-id').text(),
+                isPrivate: $(this).find('input[name="private"]').is(':checked')
+            })
+        }
     });
 
     console.log(tableContent);    
 
     $('.loader').css('display', 'block');
+    $('#modal-system .CodeMirror').remove();
+    $('#modal-system .modal-body textarea').val("");
+
 
     switch(systemType){
 
@@ -262,25 +268,26 @@ function generateSystem(){
                 tableContent: tableContent
             });
 
-            $('#modal-system .CodeMirror').remove();
-
             $('#modal-system .modal-body textarea').val(systemContent);
 
             $('#modal-system').off().on('show.bs.modal', function (e) {
 
                 setTimeout(function(){
 
-                    var editor = CodeMirror.fromTextArea(document.getElementById("show-code"), {
-                        lineNumbers: true,
-                        matchBrackets: true,
-                        mode: "application/x-httpd-php",
-                        indentUnit: 4,
-                        indentWithTabs: true
-                    });
+                    if( !$('#modal-system .CodeMirror').length ){
 
-                    $('.CodeMirror').css('height', winHeight - 220);
+                        var editor = CodeMirror.fromTextArea(document.getElementById("show-code"), {
+                            lineNumbers: true,
+                            matchBrackets: true,
+                            mode: "application/x-httpd-php",
+                            indentUnit: 4,
+                            indentWithTabs: true
+                        });
 
-                    $('.loader').css('display', 'none');
+                        $('.CodeMirror').css('height', winHeight - 220);
+
+                        $('.loader').css('display', 'none');
+                    }
 
                 }, 1000);
             });
@@ -290,7 +297,7 @@ function generateSystem(){
         break;
 
         default:
-            alert("System Type no found!");
+            alert("System Type no found!"); return;
     }       
 
     
@@ -310,7 +317,7 @@ function addTable(){
         '<table class="table tb-sysgenerator">'+
             '<thead>'+
                 '<tr>'+
-                    '<th>'+
+                    '<th colspan="6" >'+
                         '<h3>tb_'+entityName.toLowerCase()+'s</h3>'+
                     '</th>'+
                 '</tr>'+
@@ -329,6 +336,37 @@ function addTable(){
             '<tfoot>'+
                 '<tr>'+
                     '<td colspan="6" style="text-align: right;">'+
+
+                        '<div class="btn-group" data-systemtype="sqlserverdb">'+
+                            '<button type="button" class="btn btn-danger dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
+                                '<span>Gerar SQL Server DB </span><span class="caret"></span>'+
+                            '</button>'+
+                            '<ul class="dropdown-menu">'+
+                                '<li><a href="javascript:void(0);" class="btn-sysgenerator-table">Table</a></li>'+
+                                '<li><a href="javascript:void(0);" class="btn-sysgenerator-procedure">Procedures</a></li>'+
+                            '</ul>'+
+                        '</div>'+
+
+                        '<div class="btn-group" data-systemtype="mysqldb">'+
+                            '<button type="button" class="btn btn-warning dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
+                                '<span>Gerar MySql DB </span><span class="caret"></span>'+
+                            '</button>'+
+                            '<ul class="dropdown-menu">'+
+                                '<li><a href="javascript:void(0);" class="btn-sysgenerator-table">Table</a></li>'+
+                                '<li><a href="javascript:void(0);" class="btn-sysgenerator-procedure">Procedures</a></li>'+
+                            '</ul>'+
+                        '</div>'+
+
+                        '<div class="btn-group" data-systemtype="ext">'+
+                            '<button type="button" class="btn btn-primary dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
+                                '<span>Gerar ExtJs </span><span class="caret"></span>'+
+                            '</button>'+
+                            '<ul class="dropdown-menu">'+
+                                '<li><a href="javascript:void(0);" class="btn-sysgenerator-window">Window</a></li>'+
+                                '<li><a href="javascript:void(0);" class="btn-sysgenerator-sqlserver-procedure">Store & Grid</a></li>'+
+                            '</ul>'+
+                        '</div>'+
+
                         '<div class="btn-group" data-systemtype="phpclass">'+
                             '<button type="button" class="btn btn-success dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
                                 '<span>Gerar PHP Class </span><span class="caret"></span>'+
@@ -340,10 +378,11 @@ function addTable(){
                                 '<li><a href="javascript:void(0);" class="btn-sysgenerator-mysql-procedure">using MySQL procedure</a></li>'+
                             '</ul>'+
                         '</div>'+
+
                     '</td>'+
                 '</tr>'+
             '</tfoot>'+
-        '</table><br /><hr />'
+        '</table>'
 
     )
 
@@ -361,7 +400,9 @@ function addTable(){
 * INIT OBJECTS
 */
 var MySql = new MySql();
+var SQLServer = new SQLServer();
 var PHP = new PHP();
+var ExtJs = new ExtJs();
 
 $(function(){
 
@@ -370,5 +411,6 @@ $(function(){
     */
 
     $('#add-table').on('click', addTable);
+    $('#btn-modal-close').on('click', function(){ $('#modal-system').modal('hide'); })
 
 });

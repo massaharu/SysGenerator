@@ -1,7 +1,7 @@
 var MySql = (function(){
 
     /**
-    * Methods for MySql Class
+    * Methods for PHP Class
     */ 
 
     this.getPHPLoad = (function(obj, tableName, dbType){
