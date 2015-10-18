@@ -1,3 +1,11 @@
+ /** Bootstrap @Override */
+ .dropdown-menu{
+ 	right: 0px;
+ 	left: initial;
+ }
+
+/*************************/
+
  .white{
     color:#FFFFFF;
 }
@@ -47,3 +55,13 @@
 	#add-table span{
 		font-size: 20px;
 	}
+
+img.loader{
+	margin: 10px auto;
+	position: relative;
+	display: block;
+}
+
+#show-code{
+	display: none;
+}
