@@ -1,25 +1,25 @@
 <?php
-class Aluno {
+class Alun {
 
-    private $idaluno;
-    private $desaluno;
+    private $idalun;
+    private $desalun;
     private $instatus;
     private $dtcadastro;
 
-    public function getIdaluno(){
-        return $this->idaluno;
+    public function getIdalun(){
+        return $this->idalun;
     }
 
-    public function setIdaluno($idaluno){
-        $this->idaluno = $idaluno;
+    public function setIdalun($idalun){
+        $this->idalun = $idalun;
     }
 
-    public function getDesaluno(){
-        return $this->desaluno;
+    public function getDesalun(){
+        return $this->desalun;
     }
 
-    public function setDesaluno($desaluno){
-        $this->desaluno = $desaluno;
+    public function setDesalun($desalun){
+        $this->desalun = $desalun;
     }
 
     public function getInstatus(){
@@ -46,8 +46,8 @@ class Aluno {
 
         }else if(gettype($data) == "array") {
 
-            $this->setIdaluno($data['idaluno']);
-            $this->setDesaluno($data['desaluno']);
+            $this->setIdalun($data['idalun']);
+            $this->setDesalun($data['desalun']);
             $this->setInstatus($data['instatus']);
             $this->setDtcadastro($data['dtcadastro']);
 
@@ -57,37 +57,37 @@ class Aluno {
         }
     }
 
-    public function load($idaluno){
+    public function load($idalun){
 
         $select =
         "SELECT 
-            idaluno
-            ,desaluno
+            idalun
+            ,desalun
             ,instatus
             ,dtcadastro
-        FROM tb_alunos
-        WHERE idaluno = $idaluno;";
+        FROM tb_aluns
+        WHERE idalun = $idalun;";
 
         $result = SQL::arrays($select, false);
 
-        $this->setIdaluno($result['idaluno']);
-        $this->setDesaluno($result['desaluno']);
+        $this->setIdalun($result['idalun']);
+        $this->setDesalun($result['desalun']);
         $this->setInstatus($result['instatus']);
         $this->setDtcadastro($result['dtcadastro']);
 
         return $result;
     }
 
-    public function get($idaluno){
+    public function get($idalun){
 
         $select =
         "SELECT 
-            idaluno
-            ,desaluno
+            idalun
+            ,desalun
             ,instatus
             ,dtcadastro
-        FROM tb_alunos
-        WHERE idaluno = $idaluno;";
+        FROM tb_aluns
+        WHERE idalun = $idalun;";
 
         $result = SQL::arrays($select, false);
 
@@ -98,11 +98,11 @@ class Aluno {
 
         $select =
         "SELECT 
-            idaluno
-            ,desaluno
+            idalun
+            ,desalun
             ,instatus
             ,dtcadastro
-        FROM tb_alunos
+        FROM tb_aluns
         ORDER BY dtcadastro;";
 
         $result = SQL::arrays($select);
@@ -114,11 +114,11 @@ class Aluno {
 
         $select =
         "SELECT 
-            idaluno
-            ,desaluno
+            idalun
+            ,desalun
             ,instatus
             ,dtcadastro
-        FROM tb_alunos
+        FROM tb_aluns
         WHERE instatus = 1
         ORDER BY dtcadastro;";
 
@@ -131,32 +131,32 @@ class Aluno {
 
         $save = "";
 
-        if(count($this->get($this->getIdaluno())) > 0){
+        if(count($this->get($this->getIdalun())) > 0){
 
             $save = 
-            "UPDATE tb_alunos
+            "UPDATE tb_aluns
             SET
-                desaluno = '".$this->getDesaluno()."'
+                desalun = '".$this->getDesalun()."'
                 ,instatus = '".$this->getInstatus()."'
             WHERE
-                idaluno = $this->getIdaluno();
+                idalun = $this->getIdalun();
 
-            SELECT idaluno FROM tb_alunos WHERE idaluno = $this->getIdaluno();";
+            SELECT idalun FROM tb_aluns WHERE idalun = $this->getIdalun();";
 
         } else {
 
             $save = 
-            "INSERT INTO tb_alunos(
-                desaluno
+            "INSERT INTO tb_aluns(
+                desalun
                 ,instatus
                 ,dtcadastro
             ) VALUES (
-                '".$this->getDesaluno()."'
+                '".$this->getDesalun()."'
                 ,'".$this->getInstatus()."'
                 ,'".date('Y-m-d')."'
             );
 
-            SELECT LAST_INSERT_ID() as idaluno;";
+            SELECT LAST_INSERT_ID() as idalun;";
 
         }
 
@@ -168,9 +168,9 @@ class Aluno {
     public function remove(){
 
         $remove =
-        "UPDATE tb_alunos
+        "UPDATE tb_aluns
             instatus = 0
-        WHERE idaluno = $this->getIdaluno();";
+        WHERE idalun = $this->getIdalun();";
 
         SQL::query($remove);
     }
@@ -178,19 +178,11 @@ class Aluno {
     public function del(){
 
         $del =
-        "DELETE FROM tb_alunos
-        WHERE idaluno = $this->getIdaluno();";
+        "DELETE FROM tb_aluns
+        WHERE idalun = $this->getIdalun();";
 
         SQL::query($del);
     }
 
 }
-
-$Aluno = new Aluno(array(
-    'idaluno' => 0,
-    'desaluno' => "Alunpo1",
-    'instatus' => '1'
-));
-
-print_r($Aluno->save());
 ?>

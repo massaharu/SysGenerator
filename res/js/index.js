@@ -260,9 +260,6 @@ function generateSystem(){
 
             systemContent = PHP.genSystem({
                 _this: $(this),
-                table: table,
-                lines: lines,
-                thead: thead,
                 tableName: tableName,
                 className: className,
                 tableContent: tableContent
@@ -292,12 +289,47 @@ function generateSystem(){
                 }, 1000);
             });
 
-            
+        break;
+
+        case "extjs":
+
+            systemContent = ExtJs.genSystem({
+                _this: $(this),
+                tableName: tableName,
+                className: className,
+                tableContent: tableContent
+            });
+
+            $('#modal-system .modal-body textarea').val(systemContent);
+
+            $('#modal-system').off().on('show.bs.modal', function (e) {
+
+                setTimeout(function(){
+
+                    if( !$('#modal-system .CodeMirror').length ){
+
+                        var editor = CodeMirror.fromTextArea(document.getElementById("show-code"), {
+                            mode: "javascript",
+                            indentUnit: 4,
+                            indentWithTabs: true,
+                            lineNumbers: true,
+                            matchBrackets: true,
+                            continueComments: "Enter"
+                        });
+
+                        $('.CodeMirror').css('height', winHeight - 220);
+
+                        $('.loader').css('display', 'none');
+                    }
+
+                }, 1000);
+            });
+
 
         break;
 
         default:
-            alert("System Type no found!"); return;
+            alert("System Type not found!"); return;
     }       
 
     
@@ -357,13 +389,13 @@ function addTable(){
                             '</ul>'+
                         '</div>'+
 
-                        '<div class="btn-group" data-systemtype="ext">'+
+                        '<div class="btn-group" data-systemtype="extjs">'+
                             '<button type="button" class="btn btn-primary dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
                                 '<span>Gerar ExtJs </span><span class="caret"></span>'+
                             '</button>'+
                             '<ul class="dropdown-menu">'+
                                 '<li><a href="javascript:void(0);" class="btn-sysgenerator-window">Window</a></li>'+
-                                '<li><a href="javascript:void(0);" class="btn-sysgenerator-sqlserver-procedure">Store & Grid</a></li>'+
+                                '<li><a href="javascript:void(0);" class="btn-sysgenerator-storegrid">Store & Grid</a></li>'+
                             '</ul>'+
                         '</div>'+
 
@@ -410,7 +442,10 @@ $(function(){
     * GENERAL EVENTS
     */
 
+    /** Criar entidades */
     $('#add-table').on('click', addTable);
+
+    /** Fechar modal do código gerado */ 
     $('#btn-modal-close').on('click', function(){ $('#modal-system').modal('hide'); })
 
 });
