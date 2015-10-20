@@ -5,6 +5,29 @@ var ExtJs = (function(){
     * Methods for EXTJs Class
     */ 
 
+    var getJsonStore = (function(obj){
+
+        var classNames = obj.className + "s";
+
+        var jsonStore =
+        "var store" + classNames + "s = new Ext.data.JsonStore({\n"+
+        "\turl: 'json/list" + classNames + ".php',\n"+
+        "\troot: 'myData',\n"+
+        "\tfields: [\n";
+
+        $.each(obj, function(i, v){
+
+
+        });
+
+        jsonStore +=
+        "\t],\n"+
+        "\tautoLoad:true\n"+
+        "});";
+
+        return jsonStore;
+    });
+
     this.genSystem = (function(obj){
 
         var eXTJsType = obj._this.attr('class').split(' ')[0].toLowerCase();
@@ -21,43 +44,9 @@ var ExtJs = (function(){
 
             case "btn-sysgenerator-storegrid":
 
-                systemContent += 
-                "<script type=\"javascript/text\">\n\n"+
-                "/** commet 2 */\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                "alert('oi');\n\n"+
-                
-                "function removeLine(){\n\n"+
+                systemContent +=
+                    getJsonStore(obj);
 
-                    "\t$(this).closest('tr').remove();\n\n"+
-                "}\n\n"+
-
-                 "</script>\n\n";
 
             break;
 
