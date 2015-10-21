@@ -194,6 +194,16 @@ function getLine(obj){
 
 }
 
+function getDataTypeObj(dataType){
+
+    for(i in DATATYPE){
+
+        if(DATATYPE[i] == dataType ){
+            return DATATYPE[i];
+        }
+    }
+}
+
 function capitalize(str){
 
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -238,6 +248,7 @@ function generateSystem(){
             tableContent.push({
                 attribute: $(this).find('input[name=name]').val(),
                 dataType: $(this).find('select[name=datatype]').val(),
+                desExtJsDataType: JSON.parse($(this).find('select[name=datatype]').find('option:selected').attr('data-obj')),
                 isPk: $(this).find('input[name=pk]').is(':checked'),
                 isFK: $(this).find('input[name=fk]').is(':checked'),
                 fkTable: $(this).find('input[name=fk]').closest('td').find('.fk-table').text(),
