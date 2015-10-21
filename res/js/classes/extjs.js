@@ -17,7 +17,7 @@ var ExtJs = (function(){
 
         $.each(obj.tableContent, function(i, v){
 
-            var dateFormat = (v.dataType == 3)? "': dateFormat: 'timestamp'" : "'";    
+            var dateFormat = (v.dataType == 3)? "', dateFormat: 'timestamp'" : "'";    
 
             if(i == 0){
 
@@ -47,6 +47,7 @@ var ExtJs = (function(){
 
         var grid = 
         "var grid" + classNames + " = new Ext.grid.GridPanel({\n"+
+		"\tid: idgrid" + obj.className.toLowerCase() + ",\n"+
         "\tstore: store" + classNames + ",\n"+
         "\tautoScroll:true,\n"+
         "\tstripeRows: true,\n"+
@@ -57,10 +58,48 @@ var ExtJs = (function(){
         "\t\tforceFit: true,\n"+
         "\t\tgetRowClass: function(record, index) {\n\n"+
         "\t\t},\n"+
-        "\t},\n";
+        "\t},\n"+
+		"\tsm: new Ext.grid.RowSelectionModel({\n"+
+		"\t\tsingleSelect: true\n"+
+		"\t}),\n"+
+		"\tcm:new Ext.grid.ColumnModel({\n"+
+		"\t\tdefaults: {\n"+
+		"\t\t\tsortable: true, \n"+
+		"\t\t\tcollapsible: true\n"+
+		"\t\t},\n"+
+		"\t\tcolumns: [new Ext.grid.RowNumberer({\n"+
+		"\t\t\twidth:30,\n"+
+		"\t\t\theader:'nº',\n"+
+		"\t\t})";
+		
+		$.each(obj.tableContent, function(i, v){
+			
+			var dateTimeAttrs = "";
+			
+			if(v.dataType == 3 /* Datetime */){
+				dateTimeAttrs +=
+				"\t\t\txtype:'datecolumn',\n"+
+				"\t\t\tformat:'d/m/Y h:i',\n";
+				
+			}
+			
+			grid +=
+			",{\n"+
+				dateTimeAttrs+
+				"\t\t\theader:'"+ v.attribute +"',\n"+
+				"\t\t\twidth:40,\n"+
+				"\t\t\ttooltip:'"+ capitalize(v.attribute) + "',\n"+
+				"\t\t\tdataIndex:'"+ v.attribute +"'\n"+
+			"\t\t}";
+		});
         
         grid +=
-        "\tlisteners:{\n\n"+
+			"]\n"+
+		"\t}),\n"+
+        "\tlisteners:{\n"+
+		"\t\t'rowdblclick':function( $this, rowIndex, e ){\n"+
+			"\t\t\tvar rec = $this.getStore().getAt(rowIndex);\n"+
+		"\t\t}\n"+
         "\t}\n"+
         "})";
 
