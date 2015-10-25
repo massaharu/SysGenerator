@@ -392,7 +392,7 @@ function addTable(){
                         '</div>'+
 
                         '<div class="btn-group" data-systemtype="mysqldb">'+
-                            '<button type="button" class="btn btn-warning dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
+                            '<button type="button" class="btn btn-primary dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
                                 '<span>Gerar MySql DB </span><span class="caret"></span>'+
                             '</button>'+
                             '<ul class="dropdown-menu">'+
@@ -402,7 +402,7 @@ function addTable(){
                         '</div>'+
 
                         '<div class="btn-group" data-systemtype="extjs">'+
-                            '<button type="button" class="btn btn-primary dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
+                            '<button type="button" class="btn btn-info dropdown-toggle btn-sysgenerator" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
                                 '<span>Gerar ExtJs </span><span class="caret"></span>'+
                             '</button>'+
                             '<ul class="dropdown-menu">'+
@@ -442,7 +442,7 @@ function addTable(){
 
 function openExtJsWin(){
 
-    var header = 
+    var vendors = 
     '<meta charset="UTF-8">'+
     '<link rel="stylesheet" type="text/css" href="vendors/ext-3.4.0/resources/css/ext-all.css" />'+
     '<script type="text/javascript" src="vendors/ext-3.4.0/docs/resources/ext-base.js"></script>'+
@@ -453,10 +453,9 @@ function openExtJsWin(){
     var html = $('#show-code').val();
 
         winExtJs.document.write(
-            header+
+            vendors+
             "<div id='loading-win-extjs'>Carregando...</div>"+
             "<script type='text/javascript'>"+
-
             "setTimeout(function(){"+
             html+
             "$('#loading-win-extjs').hide()"+

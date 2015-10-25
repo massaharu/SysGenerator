@@ -29,6 +29,7 @@
  }
 
  .btn{
+ 	border: 0px;
  	border-radius: 0px;
 	font-family: "OpenSans-CondBold", arial, sans-serif;	
 	font-size:18px;
