@@ -106,20 +106,79 @@ var ExtJs = (function(){
 
     });
 
+    var getForm = (function(obj){
+
+        var form = 
+        "\t\t\t\tid:'idfrmsave"+obj.className.toLowerCase()+"',\n"+
+        "\t\t\t\tborder: false,\n"+
+        "\t\t\t\tbuttonAlign:'center',\n"+
+        "\t\t\t\tdefaults: { \n"+    
+        "\t\t\t\t\tanchor:'100%',\n"+     
+        "\t\t\t\t\tallowBlank:false,\n"+
+        "\t\t\t\t\tpadding: 5\n"+
+        "\t\t\t\t},\n"+
+        "\t\t\t\titems: [";
+
+        $.each(obj.tableContent, function(i, v){
+
+
+        });
+
+        form +=
+        "\n\t\t\t\t]"; 
+        
+        return form;       
+    });
+
     var getPanelWest = (function(obj){
 
         var classNames = obj.className + "s";
 
         var panelWest =         
             "\t\txtype:'panel',\n"+
+            "\t\tid:'idpanelwest"+obj.className.toLowerCase()+"',\n"+
             "\t\tregion: 'west',\n"+
             "\t\tmargins:'5 0 5 5',\n"+
             "\t\twidth:'60%',\n"+
             "\t\tcollapseMode:'mini',\n"+
             "\t\tcollapsed:true,\n"+
             "\t\tsplit:true,\n"+
+            "\t\tpadding:10,\n"+
             "\t\tlayout:'fit',\n"+
-            "\t\titems:[ ]\n";
+            "\t\tbbar:[{\n"+
+                "\t\t\txtype: 'button',\n"+
+                "\t\t\ttext: 'Voltar',\n"+
+                "\t\t\tid:'idbtnvoltar"+obj.className.toLowerCase()+"',\n"+
+                "\t\t\ticon: 'res/img/ico-24-return.png',\n"+
+                "\t\t\tscale: 'medium',\n"+
+                "\t\t\ticonAlign: 'top',\n"+
+                "\t\t\tcls: 'padding: 5px;',\n"+
+                "\t\t\twidth: 60,\n"+
+                "\t\t\thandler:function(){\n\n"+
+                "\t\t\t\txt('idpanelwest" + obj.className.toLowerCase() +"').collapse();\n"+
+                "\t\t\t}\n"+
+            "\t\t}, '-' , '->',{\n"+
+                "\t\t\txtype: 'button',\n"+
+                "\t\t\ttext: 'Salvar',\n"+
+                "\t\t\tid:'idbtnsalvar"+obj.className.toLowerCase()+"',\n"+
+                "\t\t\ticon: 'res/img/ico-24-save.png',\n"+
+                "\t\t\tscale: 'medium',\n"+
+                "\t\t\ticonAlign: 'top',\n"+
+                "\t\t\tcls: 'padding: 5px;',\n"+
+                "\t\t\twidth: 60,\n"+
+                "\t\t\thandler:function(){\n\n"+
+                "\t\t\t\txt('idturmaspai_add').collapse();\n"+
+                "\t\t\t}\n"+
+            "\t\t}],\n"+
+            "\t\titems:[{\n"+
+                "\t\t\txtype:'fieldset',\n"+
+                "\t\t\tid:'idfdssaveform"+obj.className.toLowerCase()+"',\n"+
+                "\t\t\ttitle:'Cadastrar/Editar "+ classNames +"',\n"+
+                "\t\t\tmargins:'10 10 10 10',\n"+
+                "\t\t\titems:[{\n"+
+                    getForm(obj)+
+                "\n\t\t\t}]\n"+
+            "\t\t}]\n";
         
         return panelWest;
     });
@@ -130,6 +189,7 @@ var ExtJs = (function(){
 
         var panelCenter =         
             "\t\txtype:'panel',\n"+
+            "\t\tid:'idpanelcenter"+obj.className.toLowerCase()+"',\n"+
             "\t\tregion: 'center',\n"+
             "\t\tmargins:'5 5 5 0',\n"+
             "\t\tborder:false,\n"+
@@ -146,6 +206,7 @@ var ExtJs = (function(){
 
         var panel =
         "var panel"+classNames+" = new Ext.Panel({\n"+
+            "\tid: 'idpanel"+obj.className.toLowerCase()+"',\n"+
             "\ttitle: '"+classNames+"',\n"+
             "\tborder: false,\n"+       
             "\theight: "+ panelHeight +",\n"+
@@ -153,17 +214,19 @@ var ExtJs = (function(){
             "\ttbar:[{\n"+
                 "\t\txtype: 'button',\n"+
                 "\t\ttext: 'Adicionar',\n"+
+                "\t\tid:'idbtnadd"+obj.className.toLowerCase()+"',\n"+
                 "\t\ticon: 'res/img/ico-24-add.png',\n"+
                 "\t\tscale: 'medium',\n"+
                 "\t\ticonAlign: 'top',\n"+
                 "\t\tcls: 'padding: 5px;',\n"+
                 "\t\twidth: 60,\n"+
-                "\t\thandler:function(){\n"+                   
+                "\t\thandler:function(){\n\n"+
+                "\t\t\txt('idpanelwest" + obj.className.toLowerCase() +"').expand();\n"+                   
                 "\t\t}\n"+
             "\t},'-',{\n"+
                 "\t\txtype: 'button',\n"+
                 "\t\ttext: 'Excluir',\n"+
-                "\t\tid:'btnexcluirturmapai',\n"+
+                "\t\tid: 'idbtnremove"+obj.className.toLowerCase()+"',\n"+
                 "\t\ticon: 'res/img/ico-24-remove.png',\n"+
                 "\t\tdisabled: true,\n"+
                 "\t\tscale: 'medium',\n"+
@@ -209,7 +272,16 @@ var ExtJs = (function(){
 
         return win;
 
-    })
+    });
+
+    var getGlobals = (function(){
+
+        var globals = 
+        "var xt = Ext.getCmp;\n"+
+        "var ms = Ext.MessageBox;\n\n";
+
+        return globals;
+    });
 
     this.genSystem = (function(obj){
 
@@ -221,7 +293,9 @@ var ExtJs = (function(){
 
             case "btn-sysgenerator-window":
 
-                systemContent += 
+                systemContent +=
+                "/* GLOBALS */\n"+
+                getGlobals()+
                 "/* JSON Store */\n"+
                 getJsonStore(obj)+
                 "/* Simple Grid */\n"+
