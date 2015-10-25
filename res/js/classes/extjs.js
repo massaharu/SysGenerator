@@ -47,7 +47,7 @@ var ExtJs = (function(){
 
         var grid = 
         "var grid" + classNames + " = new Ext.grid.GridPanel({\n"+
-		"\tid: idgrid" + obj.className.toLowerCase() + ",\n"+
+		"\tid: 'idgrid" + obj.className.toLowerCase() + "',\n"+
         "\tstore: store" + classNames + ",\n"+
         "\tautoScroll:true,\n"+
         "\tstripeRows: true,\n"+
@@ -101,11 +101,27 @@ var ExtJs = (function(){
 			"\t\t\tvar rec = $this.getStore().getAt(rowIndex);\n"+
 		"\t\t}\n"+
         "\t}\n"+
-        "})";
+        "});";
 
         return grid;
 
     });
+
+    var getWindow = (function(obj){
+
+        var classNames = obj.className + "s";
+
+        var win = 
+        "new Ext.Window({"+
+        "id: 'idwinadmdisciplinas',"+
+        "title:'Administrativo de Disciplinas',"+
+        "height: 570,"+
+        "width: 550"+
+        "}).show();";
+
+        return win;
+
+    })
 
     this.genSystem = (function(obj){
 
@@ -117,13 +133,23 @@ var ExtJs = (function(){
 
             case "btn-sysgenerator-window":
 
-                systemContent += "";
+                systemContent += 
+                "/* JSON Store */\n"+
+                getJsonStore(obj)+
+                "/* Simple Grid */\n"+
+                getGrid(obj)+
+                getWindow(obj);
+                
+
+
+                $('#btn-abrir-window').css({display: 'inline'});
 
             break;
 
             case "btn-sysgenerator-storegrid":
 
                 systemContent +=
+                    "/* JSON Store */\n"+
                     getJsonStore(obj)+
                     "/* Simple Grid */\n"+
                     getGrid(obj);

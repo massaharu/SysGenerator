@@ -263,6 +263,7 @@ function generateSystem(){
     $('.loader').css('display', 'block');
     $('#modal-system .CodeMirror').remove();
     $('#modal-system .modal-body textarea').val("");
+    $('#btn-abrir-window').css({display: 'none'});
 
 
     switch(systemType){
@@ -439,6 +440,33 @@ function addTable(){
     $('button.btn-sysgenerator').closest('div').find('ul li a').on('click', generateSystem);       
 }
 
+function openExtJsWin(){
+
+    var header = 
+    '<meta charset="UTF-8">'+
+    '<link rel="stylesheet" type="text/css" href="vendors/ext-3.4.0/resources/css/ext-all.css" />'+
+    '<script type="text/javascript" src="vendors/ext-3.4.0/docs/resources/ext-base.js"></script>'+
+    '<script type="text/javascript" src="vendors/ext-3.4.0/ext-all.js"></script>'+
+    '<script src="vendors/jquery-2.1.4.js"></script>';
+
+    var winExtJs = window.open();
+    var html = $('#show-code').val();
+
+        winExtJs.document.write(
+            header+
+            "<div id='loading-win-extjs'>Carregando...</div>"+
+            "<script type='text/javascript'>"+
+
+            "setTimeout(function(){"+
+            html+
+            "$('#loading-win-extjs').hide()"+
+            "}, 1000)"+
+            "</script></body></html>"
+        );
+    
+   
+}
+
 /**
 * INIT OBJECTS
 */
@@ -457,6 +485,8 @@ $(function(){
     $('#add-table').on('click', addTable);
 
     /** Fechar modal do código gerado */ 
-    $('#btn-modal-close').on('click', function(){ $('#modal-system').modal('hide'); })
+    $('#btn-modal-close').on('click', function(){ $('#modal-system').modal('hide'); });
+
+    $('#btn-abrir-window').on('click', openExtJsWin);
 
 });
